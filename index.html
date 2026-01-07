@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NTI Assignment 3</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+  <body onload="loadPage()">
+    <h1>Technical E-Commerce Website</h1>
+    <div id="login">
+      <h2>Login</h2>
+      <label for="username">Username</label>
+      <input type="text" placeholder="username" id="username" class="login">
+      <label for="password">Password</label>
+      <input type="text" placeholder="password" id="password" class="login">
+      <br><br>
+      <button id="loginbtn" class="login" onclick="login()">Login</button>
+    </div>
+    <div id="productsDiv">
+    </div>
+    <div id="cartDiv">
+      <h2>Cart</h2>
+      <h4>Select Quantity and checkout</h4>
+      <h4><span>Note that the undo button removes last product!</span></h4>
+      <p id="TotalCartPrice">Total Price = 0</p>
+      <br><br>
+      <button id="undo" onclick="undoProduct()">Undo</button>
+      <button id="checkout" onclick="checkoutCart()">Checkout</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsonwebtoken@9.0.2/dist/jsonwebtoken.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+/* ======================
+   GENERAL
+====================== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0f172a; /* Dark background */
+  color: #e2e8f0;       /* Light gray text */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1, h2, h3, h5 {
+  color: #f1f5f9;
+}
+
+span {
+  color: #f87171; /* soft red */
+}
+
+/* ======================
+   LOGIN
+====================== */
+#login {
+  background: linear-gradient(145deg, #1e293b, #111827);
+  padding: 25px 35px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  margin: 20px 0;
+  width: 300px;
+  text-align: center;
+}
+
+#login input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+#login input::placeholder {
+  color: #94a3b8;
+}
+
+#login button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: none;
+  background: #3b82f6; /* blue accent */
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#login button:hover {
+  background: #2563eb;
+}
+
+/* ======================
+   PRODUCTS
+====================== */
+#productsDiv {
+  background: linear-gradient(145deg, #1e293b, #111827);
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+#productsDiv p {
+  display: inline-block;
+  width: 60%;
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+#productsDiv button {
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: none;
+  background: #10b981; /* green accent */
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#productsDiv button:hover {
+  background: #059669;
+}
+
+#productsDiv button.Clicked {
+  background: #94a3b8; /* greyed when added */
+  cursor: not-allowed;
+}
+
+/* ======================
+   CART
+====================== */
+#cartDiv {
+  background: linear-gradient(145deg, #1e293b, #111827);
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  width: 400px;
+  margin-bottom: 20px;
+}
+
+#cartDiv p {
+  display: inline-block;
+  width: 55%;
+  margin: 5px 0;
+}
+
+#cartDiv input {
+  width: 40px;
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #e2e8f0;
+  text-align: center;
+}
+
+#cartDiv button {
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#cartDiv button:hover {
+  background: #2563eb;
+}
+
+#cartDiv button:disabled {
+  background: #64748b;
+  cursor: not-allowed;
+}
+
+/* ======================
+   TOASTS
+====================== */
+.my-toast {
+  background: linear-gradient(135deg, #1f2933, #111827) !important;
+  color: #e2e8f0;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.05);
+  display: flex;
+  text-align: center;
+  gap: 10px;
+  animation: toast-in 0.35s ease-out;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #16a34a, #166534) !important;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #dc2626, #7f1d1d) !important;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #2563eb, #1e3a8a) !important;
+}
+
+@keyframes toast-in {
+  from { transform: translateY(15px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ======================
+   MISC
+====================== */
+button {
+  transition: all 0.3s ease;
+}
+
+p, h3, h5 {
+  margin: 5px 0;
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+@media screen and (max-width: 450px) {
+  #login, #productsDiv, #cartDiv {
+    width: 90%;
+    padding: 15px;
+  }
+
+  #productsDiv p, #cartDiv p {
+    width: 50%;
+  }
+}
