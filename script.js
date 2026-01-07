@@ -216,7 +216,7 @@ function processCheckout() {
   }
   message += `Total Price = ${totalCartPrice}`;
   showToast(message, "toast-success");
-  let old = saveToLocalStorage.getItem("Carts");
+  let old = localStorage.getItem("Carts");
   saveToLocalStorage("Carts", old + cartM);
   let count = 0;
   const maxCount = 5;
