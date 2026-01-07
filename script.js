@@ -27,8 +27,19 @@ let totalCartPrice = 0;
 let cartCount = 0;
 let cartDArray = [];
 
-const prodD = document.getElementById("productsDiv");
-const cartD = document.getElementById("cartDiv");
+function safeGetByID(id) {
+  try {
+    const el = document.getElementById(id);
+    if (!el) throw new Error("Element not found: " + id);
+    return el;
+  } catch (e) {
+    showToast(e.message, "toast-error");
+    return null;
+  }
+}
+
+const prodD = safeGetByID("productsDiv");
+const cartD = safeGetByID("cartDiv");
 const defaultCart = `<h2>Cart</h2>
       <h4>Select Quantity and checkout</h4>
       <h4><span>Note that the undo button removes last product!</span></h4>
@@ -37,39 +48,54 @@ const defaultCart = `<h2>Cart</h2>
       <button id="undo" onclick="undoProduct()">Undo</button>
       <button id="checkout" onclick="checkoutCart()">Checkout</button> `;
 
+function saveToLocalStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    showToast("LocalStorage Error: " + e.message, "toast-error");
+  }
+}
+
+
 function loadPage() {
   showToast("Welcome to my Technical E-Commerce Website\nYou can login or not\nBut you must login before Checkout\nMade By: Salah Amr", "toast-info");
-  localStorage.setItem("lastCheckoutDate", Date.now());
-  localStorage.setItem("Carts", "");
+  saveToLocalStorage("lastCheckoutDate", Date.now());
+  saveToLocalStorage("Carts", "");
   showProducts();
 }
 
 function login() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  const btn = document.getElementById("loginbtn");
-  if (user == username && pass == password) {
-    showToast(`Welcome Back ${user}!`, "toast-success");
-        const token = btoa(JSON.stringify({
-      id: 1,
-      name: user,
-      role: "user",
-      exp: Date.now() + 3600000
-    }));
-    localStorage.setItem("token", token);
-    btn.disabled = true;
-    loggedIn = true;
-  }
-  else {
-    showToast("Error in username or password please try again!", "toast-error");
+  try {
+    const user = safeGetByID("username");
+    const pass = safeGetByID("password");
+    const btn = safeGetByID("loginbtn");
+    if (user.value == username && pass.value == password) {
+      showToast(`Welcome Back ${user}!`, "toast-success");
+      const token = btoa(JSON.stringify({
+        id: 1,
+        name: user,
+        role: "user",
+        exp: Date.now() + 3600000
+      }));
+      saveToLocalStorage("token", token);
+      user.readOnly = true;
+      pass.readOnly = true;
+      btn.disabled = true;
+      loggedIn = true;
+    }
+    else {
+      throw new Error("Error in username or password please try again!");
+    }
+  } catch (e) {
+    showToast(e.message, "toast-error");
   }
 }
 
 function updateProductCount(inpid) {
-  let inp = document.getElementById(inpid);
+  let inp = safeGetByID(inpid);
   let count = (inp.value != ""? +inp.value : 1);
-  const lab = document.getElementById(`totalP${inpid[1]}Price`);
-  const tot = document.getElementById(`TotalCartPrice`);
+  const lab = safeGetByID(`totalP${inpid[1]}Price`);
+  const tot = safeGetByID(`TotalCartPrice`);
   if (count < 1) {
     count = 1;
     showToast("Quantity must be positive!", "toast-error");
@@ -113,7 +139,7 @@ function calculateTotalPrice() {
   for (p of cart) {
     id = ids[p.name];
     pprice = p.price;
-    count = +document.getElementById(`p${id}input`).value;
+    count = +safeGetByID(`p${id}input`).value;
     totalCartPrice += pprice * count;
   }
 }
@@ -141,7 +167,7 @@ function updateCartDiv() {
 function selectProduct(pid) {
   let index = parseInt(pid[2]);
   cart.unshift(products[index]);
-  let btn = document.getElementById(`pr${index}btn`);
+  let btn = safeGetByID(`pr${index}btn`);
   btn.classList.remove("notClicked");
   btn.classList.add("Clicked");
   updateCartDiv();
@@ -162,49 +188,62 @@ function showProducts() {
 }
 
 function undoProduct() {
-  const last = cart[0];
-  const id = ids[last.name];
-  let btn = document.getElementById(`pr${id}btn`);
-  btn.disabled = false;
-  cart.shift();
-  updateCartDiv();
+  try {
+    if (cart.length == 0)
+      throw new Error("Cart is Empty!");
+    const last = cart[0];
+    const id = ids[last.name];
+    let btn = safeGetByID(`pr${id}btn`);
+    btn.disabled = false;
+    cart.shift();
+    updateCartDiv();
+  } catch(e) {
+    showToast(e.message, "toast-error");
+  }
+}
+
+function processCheckout() {
+  cartCount++;
+  saveToLocalStorage("lastCheckoutDate", Date.now() + 25000);
+  let message = "Checked out in process please wait 25 seconds\nYour cart:\n";
+  let cartM = `Cart Number ${cartCount}\n`;
+  for (let i = cart.length - 1; i >= 0; i--) {
+    let p = cart[i];
+    let id = ids[p.name];
+    let q = +safeGetByID(`p${id}input`).value;
+    message += `Product: ${p.name}, Quantity: ${q}, Cost: ${p.price * q}\n`;
+    cartM += `Product: ${p.name}, Quantity: ${q}, Cost: ${p.price * q}\n`;
+  }
+  message += `Total Price = ${totalCartPrice}`;
+  showToast(message, "toast-success");
+  let old = saveToLocalStorage.getItem("Carts");
+  saveToLocalStorage("Carts", old + cartM);
+  let count = 0;
+  const maxCount = 5;
+  const intervalId = setInterval(() => {
+    count++;
+    const timeNow = new Date().toLocaleTimeString();
+    showToast(`Cart will be dilivered after ${(25 - (count * 5)) == 0? "now" : (25 - (count * 5))}\nTime: ${timeNow}`, "toast-success");
+    if (count >= maxCount) {
+      clearInterval(intervalId);
+    }
+  }, 5000);
+  safeGetByID("cartDiv").innerHTML = defaultCart;
 }
 
 function checkoutCart() {
-  if (loggedIn) {
-    if (localStorage.getItem("lastCheckoutDate") <= Date.now()) {
-      cartCount++;
-      localStorage.setItem("lastCheckoutDate", Date.now() + 25000);
-      let message = "Checked out in process please wait 25 seconds\nYour cart:\n";
-      let cartM = `Cart Number ${cartCount}\n`;
-      for (let i = cart.length - 1; i >= 0; i--) {
-        let p = cart[i];
-        let id = ids[p.name];
-        let q = +document.getElementById(`p${id}input`).value;
-        message += `Product: ${p.name}, Quantity: ${q}, Cost: ${p.price * q}\n`;
-        cartM += `Product: ${p.name}, Quantity: ${q}, Cost: ${p.price * q}\n`;
-      }
-      message += `Total Price = ${totalCartPrice}`;
-      showToast(message, "toast-success");
-      let old = localStorage.getItem("Carts");
-      localStorage.setItem("Carts", old + cartM);
-      let count = 0;
-      const maxCount = 5;
-      const intervalId = setInterval(() => {
-        count++;
-        const timeNow = new Date().toLocaleTimeString();
-        showToast(`Cart will be dilivered after ${(25 - (count * 5)) == 0? "now" : (25 - (count * 5))}\nTime: ${timeNow}`, "toast-success");
-        if (count >= maxCount) {
-          clearInterval(intervalId);
-        }
-      }, 5000);
-      document.getElementById("cartDiv").innerHTML = defaultCart;
+  try {
+    if (!loggedIn) {
+      throw new Error("User must login before checkout");
     }
-    else {
-      showToast(`You must wait untill last checkout is done`, "toast-error");
+    if (cart.length === 0) {
+      throw new Error("Cart is empty");
     }
-  }
-  else {
-    showToast("Cannot Checkout Without Login, Please login first!", "toast-error");
+    if (localStorage.getItem("lastCheckoutDate") > Date.now()) {
+      throw new Error("Please wait for previous checkout");
+    }
+    processCheckout();
+  } catch (e) {
+    showToast(e.message, "toast-error");
   }
 }

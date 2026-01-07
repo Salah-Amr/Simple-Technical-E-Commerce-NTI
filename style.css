@@ -63,6 +63,10 @@ span {
   background: #2563eb;
 }
 
+#login button:disabled {
+  background: #64748b;
+}
+
 /* ======================
    PRODUCTS
 ====================== */
@@ -97,9 +101,14 @@ span {
   background: #059669;
 }
 
-#productsDiv button.Clicked {
+#productsDiv button:disabled {
   background: #94a3b8; /* greyed when added */
   cursor: not-allowed;
+}
+
+#productsDiv button:enabled {
+  background: #059669;
+  cursor: pointer;
 }
 
 /* ======================
@@ -149,6 +158,11 @@ span {
 #cartDiv button:disabled {
   background: #64748b;
   cursor: not-allowed;
+}
+
+#cartDiv button:enabled {
+  background: #2563eb;
+  cursor: pointer;
 }
 
 /* ======================
