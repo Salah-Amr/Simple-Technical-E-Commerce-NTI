@@ -70,7 +70,7 @@ function login() {
     const pass = safeGetByID("password");
     const btn = safeGetByID("loginbtn");
     if (user.value == username && pass.value == password) {
-      showToast(`Welcome Back ${user}!`, "toast-success");
+      showToast(`Welcome Back ${user.value}!`, "toast-success");
       const token = btoa(JSON.stringify({
         id: 1,
         name: user,
@@ -168,8 +168,6 @@ function selectProduct(pid) {
   let index = parseInt(pid[2]);
   cart.unshift(products[index]);
   let btn = safeGetByID(`pr${index}btn`);
-  btn.classList.remove("notClicked");
-  btn.classList.add("Clicked");
   updateCartDiv();
   btn.disabled = true;
 }
@@ -181,7 +179,7 @@ function showProducts() {
     id = ids[products[i].name];
     let statement = ` <p id="pr${id}name">${products[i].name}</p> `
     + ` <p id="pr${id}price">${products[i].price}</p> `
-    + ` <button id="pr${id}btn" onclick="selectProduct(this.id)" class="notClicked">+</button> `
+    + ` <button id="pr${id}btn" onclick="selectProduct(this.id)" class="addbtn">+</button> `
     + ` <br> <br> `;
     prodD.innerHTML += statement;
   }
@@ -203,6 +201,10 @@ function undoProduct() {
 }
 
 function processCheckout() {
+  let buttons = document.getElementsByClassName('addbtn');
+  for (let btn of buttons) {
+    btn.disabled = false;
+  }
   cartCount++;
   saveToLocalStorage("lastCheckoutDate", Date.now() + 25000);
   let message = "Checked out in process please wait 25 seconds\nYour cart:\n";
@@ -228,6 +230,7 @@ function processCheckout() {
       clearInterval(intervalId);
     }
   }, 5000);
+  cart = [];
   safeGetByID("cartDiv").innerHTML = defaultCart;
 }
 
